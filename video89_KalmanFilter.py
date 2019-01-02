@@ -17,5 +17,9 @@ motion_sig = 2.
 mu = 0.
 sig = 10000.
 
-print(update(10., 4., 12., 4.))
-print(predict(10., 4., 12., 4.))
+for n in range(len(measurements)):
+    [mu, sig] = update(mu, sig, measurements[n], measurement_sig)
+    print('update: ', [mu, sig])
+    [mu, sig] = predict(mu, sig, motion[n], motion_sig)
+    print('predict: ', [mu, sig])
+    
