@@ -15,7 +15,7 @@ motion = [1., 1., 2., 1., 1.]
 measurement_sig = 4.
 motion_sig = 2.
 mu = 0.
-sig = 10000.
+sig = 0.00000000001
 
 for n in range(len(measurements)):
     [mu, sig] = update(mu, sig, measurements[n], measurement_sig)
