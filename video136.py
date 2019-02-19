@@ -138,18 +138,18 @@ class matrix:
 def filter(x, P):
     for n in range(len(measurements)):
 
+        # prediction
+        x = (F * x) + u
+        P = F * P * F.transpose()
+
         # measurement update
-        Z = matrix([[measurements[n]]])
+        Z = matrix([measurements[n]])
         Ht = H.transpose()
-        y = Z - (H * x) # Z.transpose()?
+        y = Z.transpose() - (H * x)
         S = (H * P * Ht) + R
         K = P * Ht * S.inverse()
         x = x + (K * y)
-        P = (I - K*H) * P
-        
-        # prediction
-        x = F * x + u
-        P = F * P * F.transpose()
+        P = (I - (K * H)) * P
 
         print('x= ')
         x.show()
@@ -157,14 +157,33 @@ def filter(x, P):
         P.show()
 
 #%%
-measurements = [1, 2, 3]
+print('### 4-dimensional example ###')
 
-x = matrix([[0.], [0.]]) # initial state (location and velocity)
-P = matrix([[1000., 0.], [0., 1000.]]) # initial uncertainty
-u = matrix([[0.], [0.]]) # external motion
-F = matrix([[1., 1.], [0., 1.]]) # next state function
-H = matrix([[1., 0.]]) # measurement function
-R = matrix([[1.]]) # measurement uncertainty
-I = matrix([[1., 0.], [0., 1.]]) # identity matrix
+# measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
+# initial_xy = [4., 12.]
+measurements = [[1., 4.], [6., 0.], [11., -4.], [16., -8.]]
+initial_xy = [-4., 8.]
+# measurements = [[1., 17.], [1., 15.], [1., 13.], [1., 11.]]
+# initial_xy = [1., 19.]
+
+
+dt = 0.1 # time interval
+x = matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]]) # initial state (location and velocity)
+u = matrix([[0.], [0.], [0.], [0.]]) # external motion
+P = matrix([[0., 0., 0., 0.],
+            [0., 0., 0., 0.], 
+            [0., 0., 1000., 0.], 
+            [0., 0., 0., 1000.]]) # initial uncertainty high for velocity
+F = matrix([[1., 0., dt, 0.],
+            [0., 1., 0., dt], 
+            [0., 0., 1., 0.], 
+            [0., 0., 0., 1.]]) # next state function
+H = matrix([[1., 0., 0., 0.],
+            [0., 1., 0., 0.]]) # measurement function
+R = matrix([[0.1, 0.], [0., 0.1]]) # measurement uncertainty
+I = matrix([[1., 0., 0., 0.],
+            [0., 1., 0., 0.], 
+            [0., 0., 1., 0.], 
+            [0., 0., 0., 1.]]) # identity matrix
 
 filter(x, P)
